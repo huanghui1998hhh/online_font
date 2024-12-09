@@ -19,7 +19,6 @@ import 'asset_manifest.dart';
 import 'file_io.dart' // Stubbed implementation by default.
     // Concrete implementation if File IO is available.
     if (dart.library.io) 'file_io_desktop_and_mobile.dart' as file_io;
-import 'font_family_with_variant.dart';
 
 @visibleForTesting
 http.Client httpClient = http.Client();
@@ -68,9 +67,8 @@ Future<void> loadFontIfNecessary(
     }
 
     // Check if this font can be loaded from the device file system.
-    byteData = file_io.loadFontFromDeviceFileSystem(
-      name: fontName,
-    );
+    byteData =
+        file_io.loadFontFromDeviceFileSystem(name: fontName, fontFile: file);
 
     if (await byteData != null) {
       return loadFontByteData(fontName, byteData);
@@ -82,19 +80,19 @@ Future<void> loadFontIfNecessary(
     }
   } catch (e) {
     OnlineFont.loadedFonts.remove(familyWithVariant);
-    log('Error: google_fonts was unable to load font $fontName because the '
+    log('Error: online_font was unable to load font $fontName because the '
         'following exception occurred:\n$e');
     if (file_io.isTest) {
       log('\nThere is likely something wrong with your test. Please see '
-          'https://github.com/material-foundation/flutter-packages/blob/main/packages/google_fonts/example/test '
-          'for examples of how to test with google_fonts.');
+          'https://github.com/huanghui1998hhh/online_font/blob/main/example/test '
+          'for examples of how to test with online_font.');
     } else if (file_io.isMacOS || file_io.isAndroid) {
       log(
         '\nSee https://docs.flutter.dev/development/data-and-backend/networking#platform-notes.',
       );
     }
     log("If troubleshooting doesn't solve the problem, please file an issue "
-        'at https://github.com/material-foundation/flutter-packages/issues/new/choose.\n');
+        'at https://github.com/huanghui1998hhh/online_font/issues/new.\n');
     rethrow;
   }
 }
@@ -120,23 +118,23 @@ Future<void> loadFontByteData(
 /// This function can return `null` if the font fails to load from the URL.
 Future<ByteData> _httpFetchFontAndSaveToDevice(
   String fontName,
-  FontFile file,
+  FontFile fontFile,
 ) async {
-  final uri = Uri.tryParse(file.url);
+  final uri = Uri.tryParse(fontFile.url);
   if (uri == null) {
-    throw Exception('Invalid fontUrl: ${file.url}');
+    throw Exception('Invalid fontUrl: ${fontFile.url}');
   }
 
   http.Response response;
   try {
     response = await httpClient.get(uri);
   } catch (e) {
-    throw Exception('Failed to load font with url ${file.url}: $e');
+    throw Exception('Failed to load font with url ${fontFile.url}: $e');
   }
   if (response.statusCode == 200) {
-    if (!_isFileSecure(file, response.bodyBytes)) {
+    if (!_isFileSecure(fontFile, response.bodyBytes)) {
       throw Exception(
-        'File from ${file.url} did not match expected length and checksum.',
+        'File from ${fontFile.url} did not match expected length and checksum.',
       );
     }
 
@@ -144,13 +142,14 @@ Future<ByteData> _httpFetchFontAndSaveToDevice(
       file_io.saveFontToDeviceFileSystem(
         name: fontName,
         bytes: response.bodyBytes,
+        fontFile: fontFile,
       ),
     );
 
     return ByteData.view(response.bodyBytes.buffer);
   } else {
     // If that call was not successful, throw an error.
-    throw Exception('Failed to load font with url: ${file.url}');
+    throw Exception('Failed to load font with url: ${fontFile.url}');
   }
 }
 

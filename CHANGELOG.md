@@ -1,3 +1,7 @@
-## 0.0.1
+## 1.0.0
 
-* TODO: Describe initial release.
+* Add features.
+
+## 1.0.1
+
+* Fix warning.

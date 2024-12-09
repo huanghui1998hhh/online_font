@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 
-/// Represents a Google Fonts API variant in Flutter-specific types.
+/// Represents a font variant in Flutter-specific types.
 @immutable
 class FontVariant {
   const FontVariant({
@@ -10,8 +10,7 @@ class FontVariant {
     required this.fontStyle,
   });
 
-  /// Creates a [FontVariant] from a Google Fonts API specific
-  /// filename part.
+  /// Creates a [FontVariant] from a filename part.
   ///
   /// A filename part is the part of the filename that does not include the
   /// font family. For example, for the filename "Lato-Regular.ttf", the
@@ -23,29 +22,47 @@ class FontVariant {
   /// 'Bold' -> weight: 700, style: normal
   /// 'BoldItalic' -> weight: 700, style: italic
   ///
-  /// See [FontVariant.toApiFilenamePart] for the inverse function.
-  FontVariant.fromApiFilenamePart(String filenamePart)
+  /// See [FontVariant.toString] for the inverse function.
+  FontVariant.fromString(String filenamePart)
       : fontWeight = _extractFontWeightFromApiFilenamePart(filenamePart),
         fontStyle = _extractFontStyleFromApiFilenamePart(filenamePart);
 
-  /// Creates a [FontVariant] from a Google Fonts API specific
-  /// variant name.
-  ///
-  /// The following table shows how these variant strings convert:
-  /// 'regular' -> weight: 400, style: normal
-  /// 'italic' -> weight: 400, style: italic
-  /// '700' -> weight: 700, style: normal
-  /// '700italic' -> weight: 700, style: italic
-  ///
-  /// See [FontVariant.toString] for the inverse function.
-  FontVariant.fromString(String variantString)
-      : fontWeight = FontWeight.values[variantString == _regular ||
-                variantString == _italic
-            ? 3
-            : (int.parse(variantString.replaceAll(_italic, '')) ~/ 100) - 1],
-        fontStyle = variantString.contains(_italic)
-            ? FontStyle.italic
-            : FontStyle.normal;
+  static const thin =
+      FontVariant(fontWeight: FontWeight.w100, fontStyle: FontStyle.normal);
+  static const extraLight =
+      FontVariant(fontWeight: FontWeight.w200, fontStyle: FontStyle.normal);
+  static const light =
+      FontVariant(fontWeight: FontWeight.w300, fontStyle: FontStyle.normal);
+  static const regular =
+      FontVariant(fontWeight: FontWeight.w400, fontStyle: FontStyle.normal);
+  static const medium =
+      FontVariant(fontWeight: FontWeight.w500, fontStyle: FontStyle.normal);
+  static const semiBold =
+      FontVariant(fontWeight: FontWeight.w600, fontStyle: FontStyle.normal);
+  static const bold =
+      FontVariant(fontWeight: FontWeight.w700, fontStyle: FontStyle.normal);
+  static const extraBold =
+      FontVariant(fontWeight: FontWeight.w800, fontStyle: FontStyle.normal);
+  static const black =
+      FontVariant(fontWeight: FontWeight.w900, fontStyle: FontStyle.normal);
+  static const thinItalic =
+      FontVariant(fontWeight: FontWeight.w100, fontStyle: FontStyle.italic);
+  static const extraLightItalic =
+      FontVariant(fontWeight: FontWeight.w200, fontStyle: FontStyle.italic);
+  static const lightItalic =
+      FontVariant(fontWeight: FontWeight.w300, fontStyle: FontStyle.italic);
+  static const italic =
+      FontVariant(fontWeight: FontWeight.w400, fontStyle: FontStyle.italic);
+  static const mediumItalic =
+      FontVariant(fontWeight: FontWeight.w500, fontStyle: FontStyle.italic);
+  static const semiBoldItalic =
+      FontVariant(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic);
+  static const boldItalic =
+      FontVariant(fontWeight: FontWeight.w700, fontStyle: FontStyle.italic);
+  static const extraBoldItalic =
+      FontVariant(fontWeight: FontWeight.w800, fontStyle: FontStyle.italic);
+  static const blackItalic =
+      FontVariant(fontWeight: FontWeight.w900, fontStyle: FontStyle.italic);
 
   final FontWeight fontWeight;
   final FontStyle fontStyle;
@@ -74,8 +91,7 @@ class FontVariant {
     return FontStyle.normal;
   }
 
-  /// Converts this [FontVariant] to a Google Fonts API specific filename
-  /// part.
+  /// Converts this [FontVariant] to a filename part.
   ///
   /// A Filename part is the part of the filename that does not include the
   /// font family. For example: for the filename "Lato-Regular.ttf", the
@@ -87,7 +103,7 @@ class FontVariant {
   /// weight: 700, style: normal -> 'Bold'
   /// weight: 700, style: italic -> 'BoldItalic'
   ///
-  /// See [FontVariant.fromApiFilenamePart] for the inverse function.
+  /// See [FontVariant.fromString] for the inverse function.
   @override
   String toString() {
     final weightPrefix = _fontWeightToFilenameWeightParts[fontWeight] ??
@@ -115,16 +131,6 @@ class FontVariant {
         other.fontStyle == fontStyle;
   }
 }
-
-/// What the Flutter API calls a font style of normal/regular.
-const _normal = 'normal';
-
-/// What the Google Fonts API calls a font style of normal/regular.
-const _regular = 'regular';
-
-/// Both the Flutter API and the Google API have the same name for a font style
-/// of italic.
-const _italic = 'italic';
 
 /// Mapping from font weight types to the 'weight' part of the Google Fonts API
 /// specific filename.

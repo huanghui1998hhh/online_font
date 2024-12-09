@@ -1,5 +1,7 @@
 import 'dart:typed_data' show ByteData;
 
+import '../online_font.dart';
+
 bool get isMacOS => false;
 bool get isAndroid => false;
 bool get isTest => false;
@@ -14,6 +16,7 @@ bool get isTest => false;
 Future<void> saveFontToDeviceFileSystem({
   required String name,
   required List<int> bytes,
+  required FontFile? fontFile,
 }) {
   return Future.value();
 }
@@ -22,6 +25,7 @@ Future<void> saveFontToDeviceFileSystem({
 /// `file_io_desktop_and_mobile.dart`.
 Future<ByteData?> loadFontFromDeviceFileSystem({
   required String name,
+  required FontFile? fontFile,
 }) {
   return Future.value();
 }

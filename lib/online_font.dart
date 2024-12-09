@@ -1,4 +1,4 @@
-/// Package to allow you to use online fonts in your flutter app.
+/// A package to allow you to use online fonts in your flutter app.
 ///
 /// @docImport 'package:flutter/services.dart';
 library online_font;
@@ -13,6 +13,7 @@ import 'src/font_file.dart';
 import 'src/font_variant.dart';
 
 export 'src/font_base.dart';
+export 'src/font_family_with_variant.dart';
 export 'src/font_file.dart';
 export 'src/font_variant.dart';
 
@@ -32,6 +33,8 @@ abstract class OnlineFont {
   /// When a font is loading, a future is added to this set. When it is loaded in
   /// the [FontLoader], that future is removed from this set.
   static final Map<FontFamilyWithVariant, Future<void>> pendingFontFutures = {};
+  static Future<List<void>> allPendingFontFuture() =>
+      Future.wait(pendingFontFutures.values);
 
   String get fontFamily;
   Map<FontVariant, FontFile> get fonts;
@@ -99,8 +102,14 @@ abstract class OnlineFont {
       fontVariant: matchedVariant,
     );
 
-    final loadingFuture =
-        loadFontIfNecessary(familyWithVariant, fonts[matchedVariant]!);
+    final fontFile = fonts[matchedVariant];
+
+    assert(
+      fontFile != null,
+      'Please provide a FontFile for Variant $matchedVariant of $fontFamily',
+    );
+
+    final loadingFuture = loadFontIfNecessary(familyWithVariant, fontFile!);
     pendingFontFutures[familyWithVariant] = loadingFuture;
     loadingFuture.then((_) => pendingFontFutures.remove(familyWithVariant));
 
@@ -110,7 +119,7 @@ abstract class OnlineFont {
     );
   }
 
-  Future<void> fontLoadingFuture(
+  Future<void> loadVariant(
     FontVariant fontVariant,
   ) async {
     final familyWithVariant = FontFamilyWithVariant(
@@ -118,14 +127,29 @@ abstract class OnlineFont {
       fontVariant: fontVariant,
     );
     if (loadedFonts.contains(familyWithVariant)) return;
-    return pendingFontFutures[familyWithVariant] ??
-        loadFontIfNecessary(
-          familyWithVariant,
-          fonts[fontVariant]!,
-        );
+    final pendingFuture = pendingFontFutures[familyWithVariant];
+    if (pendingFuture != null) return pendingFuture;
+    final fontFile = fonts[fontVariant];
+    assert(
+      fontFile != null,
+      'Please provide a FontFile for Variant $fontVariant of $fontFamily',
+    );
+    return loadFontIfNecessary(familyWithVariant, fontFile!);
   }
 
-  Future<void> loadAll() => Future.wait(fonts.keys.map(fontLoadingFuture));
+  Future<void> loadAll() => Future.wait(fonts.keys.map(loadVariant));
+}
+
+class RawOnlineFont extends OnlineFont {
+  const RawOnlineFont({
+    required this.fontFamily,
+    required this.fonts,
+  });
+
+  @override
+  final String fontFamily;
+  @override
+  final Map<FontVariant, FontFile> fonts;
 }
 
 /// Returns [FontVariant] from [variantsToCompare] that most closely
