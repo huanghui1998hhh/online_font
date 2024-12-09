@@ -20,12 +20,12 @@ class YujiMai extends OnlineFont {
   @override
   Map<FontVariant, FontFile> get fonts => {
     FontVariant.regular: const FontFile(
-        url:
-            'https://fonts.gstatic.com/s/a/d6741e6df72abe0287210735f84bb297fb8704e9e44ae1bd53e9366f75215ce8.ttf',
-        expectedFileHash:
-            'd6741e6df72abe0287210735f84bb297fb8704e9e44ae1bd53e9366f75215ce8',
-        expectedLength: 7830152,
-        extensionName: 'ttf',
+      url: 'https://fonts.gstatic.com/s/a/d6741e6df72abe0287210735f84bb297fb8704e9e44ae1bd53e9366f75215ce8.ttf',
+      // ---------------optional---------------
+      expectedFileHash: 'd6741e6df72abe0287210735f84bb297fb8704e9e44ae1bd53e9366f75215ce8',
+      expectedLength: 7830152,
+      extensionName: 'ttf',
+      // ---------------optional---------------
     ),
   };
 }

@@ -5,3 +5,7 @@
 ## 1.0.1
 
 * Fix warning.
+
+## 1.0.2
+
+* Update README.md.
