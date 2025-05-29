@@ -13,3 +13,7 @@
 ## 1.0.3
 
 * Add feature `checkFontFileExists`.
+
+## 1.0.3+1
+
+* Fix `checkFontFileExists` logic.

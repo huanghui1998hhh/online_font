@@ -7,7 +7,7 @@ import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 
-import 'src/font_base.dart';
+import 'src/font_base.dart' as font_base;
 import 'src/font_family_with_variant.dart';
 import 'src/font_file.dart';
 import 'src/font_variant.dart';
@@ -109,7 +109,8 @@ abstract class OnlineFont {
       'Please provide a FontFile for Variant $matchedVariant of $fontFamily',
     );
 
-    final loadingFuture = loadFontIfNecessary(familyWithVariant, fontFile!);
+    final loadingFuture =
+        font_base.loadFontIfNecessary(familyWithVariant, fontFile!);
     pendingFontFutures[familyWithVariant] = loadingFuture;
     loadingFuture.then((_) => pendingFontFutures.remove(familyWithVariant));
 
@@ -134,13 +135,25 @@ abstract class OnlineFont {
       fontFile != null,
       'Please provide a FontFile for Variant $fontVariant of $fontFamily',
     );
-    return loadFontIfNecessary(familyWithVariant, fontFile!);
+    return font_base.loadFontIfNecessary(familyWithVariant, fontFile!);
   }
 
   Future<void> loadAll() => Future.wait(fonts.keys.map(loadVariant));
 
-  Future<bool> checkFontFileExists(FontVariant fontVariant) =>
-      checkFontFileExists(fontVariant);
+  Future<bool> checkFontFileExists(FontVariant fontVariant) {
+    final familyWithVariant = FontFamilyWithVariant(
+      family: fontFamily,
+      fontVariant: fontVariant,
+    );
+
+    final fontFile = fonts[fontVariant];
+    assert(
+      fontFile != null,
+      'Please provide a FontFile for Variant $fontVariant of $fontFamily',
+    );
+
+    return font_base.checkFontFileExists(familyWithVariant, fontFile!);
+  }
 }
 
 class RawOnlineFont extends OnlineFont {

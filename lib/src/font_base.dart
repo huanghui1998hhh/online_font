@@ -20,6 +20,15 @@ import 'file_io.dart' // Stubbed implementation by default.
     // Concrete implementation if File IO is available.
     if (dart.library.io) 'file_io_desktop_and_mobile.dart' as file_io;
 
+Future<bool> checkFontFileExists(
+  FontFamilyWithVariant familyWithVariant,
+  FontFile file,
+) =>
+    file_io.checkFontFileExists(
+      name: familyWithVariant.toString(),
+      fontFile: file,
+    );
+
 @visibleForTesting
 http.Client httpClient = http.Client();
 
