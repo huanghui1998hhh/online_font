@@ -1,6 +1,6 @@
 name: online_font
 description: A package to allow you to use online fonts in your flutter app.
-version: 1.0.2
+version: 1.0.3
 repository: https://github.com/huanghui1998hhh/online_font
 
 environment:

@@ -138,6 +138,9 @@ abstract class OnlineFont {
   }
 
   Future<void> loadAll() => Future.wait(fonts.keys.map(loadVariant));
+
+  Future<bool> checkFontFileExists(FontVariant fontVariant) =>
+      checkFontFileExists(fontVariant);
 }
 
 class RawOnlineFont extends OnlineFont {

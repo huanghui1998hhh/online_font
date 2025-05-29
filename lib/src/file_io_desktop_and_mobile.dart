@@ -37,6 +37,14 @@ Future<ByteData?> loadFontFromDeviceFileSystem({
   return null;
 }
 
+Future<bool> checkFontFileExists({
+  required String name,
+  required FontFile? fontFile,
+}) async {
+  final file = await _localFile(name, fontFile);
+  return file.existsSync();
+}
+
 Future<String> get _localPath async {
   final directory = await getApplicationSupportDirectory();
   return directory.path;

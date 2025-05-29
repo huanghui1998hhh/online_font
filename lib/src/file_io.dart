@@ -29,3 +29,10 @@ Future<ByteData?> loadFontFromDeviceFileSystem({
 }) {
   return Future.value();
 }
+
+Future<bool> checkFontFileExists({
+  required String name,
+  required FontFile? fontFile,
+}) {
+  return Future.value(false);
+}
